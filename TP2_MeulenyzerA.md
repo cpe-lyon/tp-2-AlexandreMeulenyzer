@@ -41,17 +41,18 @@ Dans le cas d'un mauvais mdp :
   
 #  Exercice 3 : Expressions rationnelles :
 Ecrivez un script qui prend un paramètre et utilise la fonction suivante pour vérifier que ce paramètre
-est un nombre réel :  
-`function is_number()  `  
-`{  `  
-`re='^[+-]?[0-9]+([.][0-9]+)?$'  `  
-`if ! [[ $1 =~ $re ]] ; then `   
-`return 1 `   
-`else  `  
-`return 0  `  
-`fi  `  
-`}  `  
+est un nombre réel : 
+
+```bash
+function is_number() 
+{
+    re='^[+-]?[0-9]+([.][0-9]+)?$'
+    if ! [[ $1 =~ $re ]] ; then
+        return 1  
+    else 
+        return 0 
+    fi 
+}
+```
+
 Il affichera un message d’erreur dans le cas contraire.  
-
-
-aaa
