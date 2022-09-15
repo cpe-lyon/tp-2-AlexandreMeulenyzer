@@ -55,4 +55,31 @@ function is_number()
 }
 ```
 
-Il affichera un message d’erreur dans le cas contraire.  
+Il affichera un message d’erreur dans le cas contraire.
+```bash
+#!/bin/bash
+
+if [ "$1" == "" ]; then
+        echo "Saisir quelque chose:"
+        exit 1
+fi
+
+
+function is_number()
+{
+        re='^[+-]?[0-9]+([.][0-9]+)?$'
+        if ! [[ $1 =~ $re ]] ; then
+                return 1
+        else
+                return 0
+        fi
+}
+
+is_number $1
+
+if [ $? != "1" ]; then
+        echo "C'est un nombre"
+else
+        echo "Ce n'est pas un nombre"
+fi
+```
