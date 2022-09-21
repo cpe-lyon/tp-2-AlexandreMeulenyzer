@@ -33,7 +33,22 @@ $_. contient tous les noms de fichier absolu du shell ou du script qui a été e
 Écrivez un script testpwd.sh qui demande de saisir un mot de passe et vérifie s’il correspond ou non au
 contenu d’une variable PASSWORD dont le contenu est codé en dur dans le script. Le mot de passe saisi par
 l’utilisateur ne doit pas s’afficher.  
- ![image](https://user-images.githubusercontent.com/113101795/190340275-3bf30d3d-b372-4a4d-b5ab-81f6efcdd934.png)  
+```bash
+#!/bin/bash
+
+mdp='123+aze'
+
+echo -n "mdp"
+echo -e ""
+read -s mdpentre
+
+if [ "$mdpentre" = "$mdp" ]; then
+        echo -e "mdp bon"
+else
+        echo -e "not good sussy boy"
+
+fi
+```
 Dans le cas d'un mdp exact :  
 ![image](https://user-images.githubusercontent.com/113101795/190340369-a1c638da-33e1-48ac-aff3-e8b8ba5c3637.png)  
 Dans le cas d'un mauvais mdp :  
@@ -83,5 +98,173 @@ else
         echo "Ce n'est pas un nombre"
 fi
 ```
-![image](https://user-images.githubusercontent.com/113101795/190352544-b509b482-4b5b-4117-b951-2203e3de8daf.png)  
+![image](https://user-images.githubusercontent.com/113101795/190352544-b509b482-4b5b-4117-b951-2203e3de8daf.png)
 
+# Exercice 4. Contrôle d’utilisateur  
+Écrivez un script qui vérifie l’existence d’un utilisateur dont le nom est donné en paramètre du script. Si le
+script est appelé sans nom d’utilisateur, il affiche le message : ”Utilisation : nom_du_script nom_utilisateur”,
+où nom_du_script est le nom de votre script récupéré automatiquement (si vous changez le nom de votre
+script, le message doit changer automatiquement)  
+
+```bash
+#!/bin/bash
+read -p "Veuillez entrer votre nom d'utilisateur ici : ? " new_user
+id -u "$new_user"> /dev/null 2>&1
+if [ "$?" == "0" ]; then
+    echo "utilisateur valide"
+else
+    echo "votre nom d'utilisateur n'est pas valide."
+fi
+```
+
+# Exercice 5. Factorielle
+Écrivez un programme qui calcule la factorielle d’un entier naturel passé en paramètre (on supposera que
+l’utilisateur saisit toujours un entier naturel).
+
+```bash
+#!/bin/sh 
+#fonction factoriel
+ 
+fact() { 
+        n=$1
+         if [ $n -eq 0 ]; then 
+                echo 1 
+         else 
+                echo $(( n * `fact $(( n - 1 ))` )) 
+         fi     
+
+}
+echo `fact $1`
+```  
+# Exercice 6. Le juste prix  
+Écrivez un script qui génère un nombre aléatoire entre 1 et 1000 et demande à l’utilisateur de le deviner.
+Le programme écrira ”C’est plus !”, ”C’est moins !” ou ”Gagné !” selon les cas (vous utiliserez $RANDOM).  
+```bash
+#!/bin/bash
+chiffre=$(((RANDOM % 1000) +1))
+read proposition
+tentative=0
+
+
+while test "$proposition" != "$chiffre"
+
+        do
+                if [[ $proposition =~ ^[0-9]+$ ]]
+                        then
+                                if test $chiffre -gt $proposition 
+                                  then
+                                  ((tentative++))
+                                  echo "C'est plus"
+                                elif test $chiffre -lt $proposition 
+                                  then
+                                  ((tentative++))
+                                  echo "C'est moins"
+                                elif test $proposition -eq $proposition
+                                        then
+                                        ((tentative++))
+                                        echo "Mettre un chiffre"
+                                else 
+                                        echo "Mettre un chiffre"
+                                fi
+                        read proposition
+                        else 
+                                echo "Mettre un chiffre"
+                                read proposition
+                fi
+        done
+
+if test $chiffre -eq $proposition
+        then
+        echo "Bravo vous avez trouvé en $tentative essaies"
+fi
+```
+```
+root@localhost:/home/User# ./justeprix.sh 
+40
+C'est plus
+0
+C'est plus
+Mange tes morts, mets un chiffre
+14
+C'est plus
+50
+C'est plus
+600
+C'est moins
+400
+C'est moins
+200
+C'est plus
+300
+C'est plus
+350
+C'est moins
+310
+C'est plus
+325
+C'est plus
+335
+C'est moins
+333
+C'est plus
+334
+Bravo vous avez trouvé en 13 essaies
+root@localhost:/home/User# 
+```
+# Exercice 7. Statistiques
+1. Écrivez un script qui prend en paramètres trois entiers (entre -100 et +100) et affiche le min, le max
+et la moyenne. Vous pouvez réutiliser la fonction de l’exercice 3 pour vous assurer que les paramètres
+sont bien des entiers.
+```bash
+#!/bin/bash
+
+if [ $# -ne 3 ]; then
+        echo -e "veuillez rentré 3 chiffre/nombre\n"
+        exit 1
+fi
+
+function is_number() 
+{
+    re='^[+-]?[0-9]+([.][0-9]+)?$'
+    if ! [[ $1 =~ $re ]] ; then
+        return 1  
+    else 
+        return 0 
+    fi 
+}
+
+moyenne=0
+max=0
+min=0
+i=1
+
+for var in "$@"; do
+        is_number $var
+        if [ $? == "1" ]; then
+                echo $var "n'est pas un nombre"
+                exit 1
+        else
+                if [ $i -eq 1 ]; then
+                        min=$var
+                        max=$var
+                        moyenne=$((moyenne + $var))
+                else
+                        if [ $var -lt $min ]; then
+                                min=$var
+                        elif [ $var -gt $max ]; then
+                                max=$var
+                        fi
+                                moyenne=$((moyenne + $var))
+
+                fi
+        fi
+                i=$((i + 1))
+done
+
+i=$((i - 1))
+moyenne=$((moyenne / $i))
+
+echo min : $min
+echo max : $max
+echo moyenne : $moyenne                        
+```
